@@ -73,7 +73,8 @@ public class Multiplication {
 
 			for (Map.Entry<String, Double> en1: relation.entrySet()) {
 				for (Map.Entry<String, Double> en2: rating.entrySet()) {
-					context.write(new Text(en1.getKey() + ":" + en2.getKey()))
+					// key is uid:mid
+					context.write(new Text(en1.getKey() + ":" + en2.getKey()), new DoubleWritable(en1.getValue()*en2.getValue()));
 				}
 			}
 		}
@@ -87,8 +88,9 @@ public class Multiplication {
 		job.setJarByClass(Multiplication.class);
 
 		ChainMapper.addMapper(job, CooccurrenceMapper.class, LongWritable.class, Text.class, Text.class, Text.class, conf);
-		ChainMapper.addMapper(job, RatingMapper.class, Text.class, Text.class, Text.class, Text.class, conf);
+		ChainMapper.addMapper(job, RatingMapper.class, LongWritable.class, Text.class, Text.class, Text.class, conf);
 
+		// redundancy?
 		job.setMapperClass(CooccurrenceMapper.class);
 		job.setMapperClass(RatingMapper.class);
 
@@ -102,8 +104,9 @@ public class Multiplication {
 		MultipleInputs.addInputPath(job, new Path(args[0]), TextInputFormat.class, CooccurrenceMapper.class);
 		MultipleInputs.addInputPath(job, new Path(args[1]), TextInputFormat.class, RatingMapper.class);
 
-		TextOutputFormat.setOutputPath(job, new Path(args[2]));
-		
+		TextOutputFormat.setOutputPath((job, new Path(args[2]));
+
 		job.waitForCompletion(true);
+
 	}
 }
