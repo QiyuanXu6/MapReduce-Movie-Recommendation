@@ -104,7 +104,7 @@ public class Multiplication {
 		MultipleInputs.addInputPath(job, new Path(args[0]), TextInputFormat.class, CooccurrenceMapper.class);
 		MultipleInputs.addInputPath(job, new Path(args[1]), TextInputFormat.class, RatingMapper.class);
 
-		TextOutputFormat.setOutputPath((job, new Path(args[2]));
+		TextOutputFormat.setOutputPath(job, new Path(args[2]));
 
 		job.waitForCompletion(true);
 

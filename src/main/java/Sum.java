@@ -21,9 +21,9 @@ public class Sum {
         // map method
         @Override
         public void map(LongWritable key, Text value, Context context) throws IOException, InterruptedException {
-
-            //pass data to reducer
-
+            String[] line = value.toString().trim().split("\t");
+            // do nothing
+            context.write(new Text(line[0]), new DoubleWritable(Double.parseDouble(line[1])));
         }
     }
 
@@ -35,14 +35,19 @@ public class Sum {
 
             //user:movie relation
            //calculate the sum
+            double sum = 0;
+            for (DoubleWritable t: values) {
+                sum += t.get();
+            }
+            context.write(key, new DoubleWritable(sum));
         }
     }
 
     public static void main(String[] args) throws Exception {
-
         Configuration conf = new Configuration();
 
         Job job = Job.getInstance(conf);
+
         job.setMapperClass(SumMapper.class);
         job.setReducerClass(SumReducer.class);
 
@@ -50,8 +55,9 @@ public class Sum {
 
         job.setInputFormatClass(TextInputFormat.class);
         job.setOutputFormatClass(TextOutputFormat.class);
-        job.setOutputKeyClass(Text.class);
-        job.setOutputValueClass(DoubleWritable.class);
+
+        job.setOutputValueClass(Text.class);
+        job.setOutputValueClass(Text.class);
 
         TextInputFormat.setInputPaths(job, new Path(args[0]));
         TextOutputFormat.setOutputPath(job, new Path(args[1]));
